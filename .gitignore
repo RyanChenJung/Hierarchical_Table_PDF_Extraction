@@ -1,0 +1,20 @@
+# Data & Models
+data/raw/
+data/processed/
+models/
+*.jsonl
+*.pth
+*.pt
+*.bin
+*.safetensors
+
+# Python & Environments
+__pycache__/
+*.pyc
+.env
+venv/
+env/
+.ipynb_checkpoints/
+
+# OS specific
+.DS_Store
