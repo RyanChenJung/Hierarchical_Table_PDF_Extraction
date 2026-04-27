@@ -1,6 +1,12 @@
 # Data & Models
-data/raw/
-data/processed/
+data/raw/*
+data/processed/*
+data/synthetic/*
+verification/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/synthetic/.gitkeep
+
 models/
 *.jsonl
 *.pth
