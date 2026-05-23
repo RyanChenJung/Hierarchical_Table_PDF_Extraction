@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-load_model_helper.py - Model Loading Helper for UniTable Streamlit Integration
+loader.py - Model Loading Helper for UniTable Streamlit Integration
 
 This module provides functions to load UniTable models for inference.
 It can be directly copied into your Streamlit application.
 
 Usage in Streamlit:
-    from load_model_helper import load_unitable_models
+    from loader import load_unitable_models
     
     # Load all three models
     structure_model, bbox_model, content_model, vocab_s, vocab_b, vocab_c = load_unitable_models(
-        base_dir="/path/to/ryan_handoff"
+        base_dir="/path/to/unitable_bundle"
     )
 
 Version: 1.0
@@ -124,7 +124,7 @@ def load_unitable_models(
     Call this once at app startup to load all models.
     
     Args:
-        base_dir: Path to the ryan_handoff directory
+        base_dir: Path to the unitable_bundle directory
         use_cpu: If True, load models on CPU (default: use GPU if available)
     
     Returns:
@@ -132,7 +132,7 @@ def load_unitable_models(
         
     Example:
         >>> structure_model, bbox_model, content_model, vocab_s, vocab_b, vocab_c = load_unitable_models(
-        ...     base_dir="./ryan_handoff",
+        ...     base_dir="./unitable_bundle",
         ...     use_cpu=False
         ... )
         >>> print("All models loaded successfully!")

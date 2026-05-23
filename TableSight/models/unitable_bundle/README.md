@@ -9,7 +9,7 @@ This guide explains how to integrate the fine-tuned UniTable model into your Str
 ## 📦 What's Included
 
 ```
-ryan_handoff/
+unitable_bundle/
 ├── checkpoints/
 │   └── content_best_merged.pt      ← Fine-tuned Content Model (LoRA merged)
 ├── models/
@@ -20,8 +20,8 @@ ryan_handoff/
 │   ├── vocab_cell_6k.json           ← Cell content tokenizer
 │   ├── vocab_html.json              ← HTML/structure tokenizer
 │   └── vocab_bbox.json              ← Bounding box tokenizer
-├── load_model_helper.py             ← Model loading utility (copy to your app)
-└── INTEGRATION_GUIDE.md             ← This file
+├── loader.py             ← Model loading utility (copy to your app)
+└── README.md             ← This file
 ```
 
 ---
@@ -52,11 +52,11 @@ pip install peft
 
 ### Option A: Use the Helper Function (Recommended)
 
-Copy `load_model_helper.py` into your Streamlit project directory, then use it like this:
+Copy `loader.py` into your Streamlit project directory, then use it like this:
 
 ```python
 import streamlit as st
-from load_model_helper import load_unitable_models
+from loader import load_unitable_models
 
 st.title("UniTable Table Extraction")
 
@@ -64,7 +64,7 @@ st.title("UniTable Table Extraction")
 @st.cache_resource
 def load_models():
     return load_unitable_models(
-        base_dir="./ryan_handoff",  # Adjust path as needed
+        base_dir="./unitable_bundle",  # Adjust path as needed
         use_cpu=False               # Set True if no GPU
     )
 
@@ -86,17 +86,17 @@ from pathlib import Path
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Load tokenizer
-vocab_c = tk.Tokenizer.from_file("./ryan_handoff/vocab/vocab_cell_6k.json")
+vocab_c = tk.Tokenizer.from_file("./unitable_bundle/vocab/vocab_cell_6k.json")
 
 # Load merged checkpoint
 checkpoint = torch.load(
-    "./ryan_handoff/checkpoints/content_best_merged.pt",
+    "./unitable_bundle/checkpoints/content_best_merged.pt",
     map_location=device,
     weights_only=False
 )
 
 # You'll need the model architecture code from run_experiment.py
-# Or use load_model_helper.py which handles this automatically
+# Or use loader.py which handles this automatically
 ```
 
 ---
@@ -110,7 +110,7 @@ Find where you load the Content model in your current Streamlit app:
 content_model = load_model("./models/unitable_large_content.pt")
 
 # AFTER (fine-tuned model):
-content_model = load_model("./ryan_handoff/checkpoints/content_best_merged.pt")
+content_model = load_model("./unitable_bundle/checkpoints/content_best_merged.pt")
 ```
 
 **That's the only change needed!** The Structure and BBox models remain the same.
@@ -144,7 +144,7 @@ pip install tokenizers
 **Solution:** Use CPU mode or reduce batch size:
 ```python
 structure_model, bbox_model, content_model, vocab_s, vocab_b, vocab_c = load_unitable_models(
-    base_dir="./ryan_handoff",
+    base_dir="./unitable_bundle",
     use_cpu=True  # Force CPU mode
 )
 ```
@@ -154,12 +154,12 @@ structure_model, bbox_model, content_model, vocab_s, vocab_b, vocab_c = load_uni
 ```python
 # Use absolute path if relative path doesn't work
 import os
-handoff_path = os.path.abspath("./ryan_handoff")
+handoff_path = os.path.abspath("./unitable_bundle")
 models = load_unitable_models(base_dir=handoff_path)
 ```
 
 ### Problem: "Model architecture mismatch"
-**Solution:** The `load_model_from_state()` function in `load_model_helper.py` automatically infers architecture from the checkpoint. Make sure you're using this helper function rather than loading manually.
+**Solution:** The `load_model_from_state()` function in `loader.py` automatically infers architecture from the checkpoint. Make sure you're using this helper function rather than loading manually.
 
 ---
 
@@ -171,12 +171,12 @@ Here's a complete example of running inference with the fine-tuned model:
 import streamlit as st
 from PIL import Image
 import torch
-from load_model_helper import load_unitable_models
+from loader import load_unitable_models
 
 # ── Load Models ──────────────────────────────────────────────
 @st.cache_resource
 def load_models():
-    return load_unitable_models(base_dir="./ryan_handoff", use_cpu=False)
+    return load_unitable_models(base_dir="./unitable_bundle", use_cpu=False)
 
 structure_model, bbox_model, content_model, vocab_s, vocab_b, vocab_c = load_models()
 
@@ -218,18 +218,18 @@ if uploaded_file is not None:
 
 If you encounter issues:
 
-1. Check that all files in `ryan_handoff/` are present
+1. Check that all files in `unitable_bundle/` are present
 2. Verify Python packages are installed (`pip list | grep -E "torch|tokenizers|streamlit"`)
 3. Make sure the `unitable` source code is accessible (add to `sys.path` if needed)
-4. Check the `load_model_helper.py` file for detailed function documentation
+4. Check the `loader.py` file for detailed function documentation
 
 ---
 
 ## 📋 Checklist
 
 - [ ] Installed Python dependencies (`torch`, `tokenizers`, `streamlit`, etc.)
-- [ ] Copied `load_model_helper.py` to your project
-- [ ] Verified all files in `ryan_handoff/` are present
+- [ ] Copied `loader.py` to your project
+- [ ] Verified all files in `unitable_bundle/` are present
 - [ ] Updated Content model path to use `content_best_merged.pt`
 - [ ] Tested model loading with a simple script
 - [ ] Ran inference on a test image

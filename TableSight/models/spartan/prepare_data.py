@@ -179,7 +179,7 @@ def main():
     print(f"\nimage_type distribution:")
     print(df["image_type"].value_counts().to_string())
     print(f"\nReady. Run the fine-tuner with:")
-    print(f"  python TableSight/models/spartan/spartan_hierarchical_extractor.py \\")
+    print(f"  python TableSight/models/spartan/train_spartan.py \\")
     print(f"      --csv    {csv_path} \\")
     print(f"      --images {img_dir} \\")
     print(f"      --out-dir TableSight/models/spartan")

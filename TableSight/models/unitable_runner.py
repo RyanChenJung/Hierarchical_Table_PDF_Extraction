@@ -2,7 +2,7 @@
 
 This is a faithful port of `notebooks/full_pipeline.ipynb` from the cloned
 poloclub/unitable repo at:
-    TableSight/models/unitable_handoff/unitable/
+    TableSight/models/unitable_bundle/unitable/
 
 Three model passes:
     1. Structure   prefix=[html],  size=448x448,  whitelist=VALID_HTML_TOKEN
@@ -34,7 +34,7 @@ from PIL import Image
 # ──────────────────────── path setup ────────────────────────────────────────
 
 HERE = Path(__file__).resolve()
-HANDOFF_DIR = HERE.parent / "unitable_handoff"
+HANDOFF_DIR = HERE.parent / "unitable_bundle"
 UNITABLE_REPO = HANDOFF_DIR / "unitable"          # poloclub clone
 
 # Make `src.*` importable (the poloclub repo's package root)
@@ -139,7 +139,7 @@ class UniTableRunner:
         import torch
         self._torch = torch
 
-        from load_model_helper import load_unitable_models  # type: ignore
+        from loader import load_unitable_models  # type: ignore
         (self.struct_model, self.bbox_model, self.content_model,
          self.vocab_s, self.vocab_b, self.vocab_c) = load_unitable_models(
             base_dir=str(bundle_root), use_cpu=use_cpu)

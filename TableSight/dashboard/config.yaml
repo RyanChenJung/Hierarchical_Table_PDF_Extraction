@@ -20,9 +20,9 @@ checkpoints:
   # On Colab: /content/drive/MyDrive/Computer_Vision_Team8/outputs/sprint2_1300sample/checkpoints/phase1_general
   florence:    "/Users/jaredmaksoud/Downloads/florence2_phase1_general"
 
-  # UniTable handoff bundle.  Pass the *directory* — load_model_helper
+  # UniTable handoff bundle.  Pass the *directory* — loader
   # loads structure / bbox / fine-tuned content from it.
-  unitable:    "/Users/jaredmaksoud/Downloads/ryan_handoff"
+  unitable:    "/Users/jaredmaksoud/Downloads/unitable_bundle"
 
   # Tuned SPARTAN params directory.
   spartan: "TableSight/models/spartan"

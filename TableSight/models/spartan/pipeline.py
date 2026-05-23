@@ -20,7 +20,7 @@ compatibility with the dashboard's inference layer (the UI labels it "SPARTAN").
 Tuned parameters are loaded at __init__ time from:
     <this_dir>/preprocessing_params.json
     <this_dir>/grid_params.json
-both produced by `spartan_hierarchical_extractor.ipynb`. If either file is
+both produced by `train_spartan.py`. If either file is
 missing, sensible defaults are used (matching the notebook's "baseline" row).
 """
 from __future__ import annotations

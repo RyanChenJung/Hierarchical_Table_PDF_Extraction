@@ -2,7 +2,7 @@
 
 Converted from the original Colab notebook.  Each `# %%` block is a
 notebook cell; open this file in VS Code or Jupyter for a notebook-
-style view, or run end-to-end with `python spartan_hierarchical_extractor.py`.
+style view, or run end-to-end with `python train_spartan.py`.
 
 CLI flags (when run as a script):
     --benchmark         run inference + TEDS on the test split
@@ -1388,15 +1388,15 @@ from pathlib import Path
 artefacts = {
     'preprocessing_params.json': SPARTAN_OUT / 'preprocessing_params.json',
     'grid_params.json':           SPARTAN_OUT / 'grid_params.json',
-    'spartan_benchmark.csv':      SPARTAN_OUT / 'spartan_benchmark.csv',
+    'benchmark.csv':      SPARTAN_OUT / 'benchmark.csv',
     'spartan_results.csv':        SPARTAN_OUT / 'spartan_results.csv',
 }
 
 # Also save the final benchmark in the schema the dashboard expects
 if 'results_df' in dir():
-    bench_path = SPARTAN_OUT / 'spartan_benchmark.csv'
+    bench_path = SPARTAN_OUT / 'benchmark.csv'
     results_df.to_csv(bench_path, index=False)
-    artefacts['spartan_benchmark.csv'] = bench_path
+    artefacts['benchmark.csv'] = bench_path
 
 print('Generated artefacts:')
 for name, p in artefacts.items():
