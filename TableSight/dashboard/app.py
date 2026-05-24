@@ -53,6 +53,9 @@ from TableSight.dashboard.utils.teds import (                                   
 from TableSight.dashboard.utils.visualization import (                             # noqa: E402
     metric_bars, teds_distribution, failure_pies, summary_table,
 )
+from TableSight.dashboard.utils.html_to_dataframe import (                          # noqa: E402
+    robust_html_to_dataframe,
+)
 
 
 # ══════════════════════════════════════════════════════════════════════════
@@ -522,6 +525,42 @@ with TAB_COMPARE:
                     else:
                         err = r.get("metadata", {}).get("error", "")
                         st.warning(f"(empty output) {err}")
+
+                    # ── HTML → DataFrame + CSV download ─────────────────
+                    if has_html:
+                        parsed = robust_html_to_dataframe(r["html"])
+                        df = parsed.get("df")
+                        if df is not None and not df.empty:
+                            status_msg = {
+                                "success_clean":              "✓ parsed cleanly",
+                                "success_fixed_misalignment": f"✓ parsed (padded "
+                                    f"{parsed['max_cols_before']-parsed['min_cols_before']} cols)",
+                            }.get(parsed["status"], parsed["status"])
+                            st.caption(
+                                f"{status_msg} · {parsed['num_rows']} rows × "
+                                f"{parsed['num_cols']} cols"
+                            )
+                            with st.expander("DataFrame preview"):
+                                st.dataframe(df, use_container_width=True,
+                                              height=min(320, 36 + 30 * len(df)))
+                            csv_bytes = df.to_csv(index=False).encode("utf-8")
+                            fname = (
+                                f"{image_label.replace(' ', '_').replace('·','_') or 'table'}"
+                                f"__{name}.csv"
+                            )
+                            st.download_button(
+                                label=f"⬇ Download {_disp(name)} as CSV",
+                                data=csv_bytes,
+                                file_name=fname,
+                                mime="text/csv",
+                                key=f"dl_csv_{name}",
+                                use_container_width=True,
+                            )
+                        else:
+                            st.caption(
+                                f"⚠ parse failed: "
+                                f"{parsed.get('error_message') or parsed['status']}"
+                            )
                     with st.expander("Raw HTML"):
                         st.code(r.get("html", ""), language="html")
                     with st.expander("Metadata"):

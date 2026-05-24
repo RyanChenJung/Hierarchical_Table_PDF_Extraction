@@ -30,6 +30,7 @@ scipy
 # Evaluation + viz
 apted                           # TEDS edit distance
 lxml                            # HTML tree parsing
+beautifulsoup4                  # HTML→DataFrame parser
 plotly                          # dashboard charts
 
 # HuggingFace dataset bootstrap (used only by the SPARTAN training script)
