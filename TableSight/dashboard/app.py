@@ -15,11 +15,11 @@ Models
 
 Tabs
 ----
-    🔍 Compare           upload OR pick from gallery, multiselect models,
+    Compare              upload OR pick from gallery, multiselect models,
                          run + score against ground truth
-    📊 Benchmark         summary stats from the saved evaluation run
-    📦 Batch Eval        run all loaded models over a CSV slice
-    🔬 Failure Analysis  TEDS<threshold cases with diffs and category pies
+    Benchmark            summary stats from the saved evaluation run
+    Batch Eval           run all loaded models over a CSV slice
+    Failure Analysis     TEDS<threshold cases with diffs and category pies
 
 Run
 ---
@@ -61,8 +61,7 @@ from TableSight.dashboard.utils.html_to_dataframe import (                      
 # ══════════════════════════════════════════════════════════════════════════
 # Page chrome — UChicago maroon palette
 # ══════════════════════════════════════════════════════════════════════════
-st.set_page_config(page_title="TableSight · Model Comparison",
-                   page_icon="📊", layout="wide")
+st.set_page_config(page_title="TableSight · Model Comparison", layout="wide")
 
 # Display labels — keep internal model names ("spartan") stable so the
 # config / runner code doesn't churn, but show "SPARTAN" in the UI.
@@ -354,7 +353,7 @@ def pdf_first_page_to_image(file_bytes: bytes) -> Optional[Image.Image]:
 st.sidebar.title("TableSight")
 st.sidebar.caption("Multi-model table extraction")
 
-if st.sidebar.button("🔁 Reload models"):
+if st.sidebar.button("Reload models"):
     for k in ("extractors", "status", "cfg"): st.session_state.pop(k, None)
     st.cache_data.clear()
 
@@ -365,7 +364,7 @@ cfg = st.session_state.get("cfg", {})
 st.sidebar.subheader("Model status")
 for name in ("florence", "unitable", "spartan"):
     ok = extractors.get(name) is not None
-    icon = "✅" if ok else "⚠️"
+    icon = "[ok]" if ok else "[warn]"
     msg = "loaded" if ok else (status.get(name) or "not configured")
     short = msg if len(msg) < 60 else msg[:57] + "…"
     st.sidebar.markdown(
@@ -395,10 +394,10 @@ selected_models = st.sidebar.multiselect(
 # ══════════════════════════════════════════════════════════════════════════
 
 TAB_COMPARE, TAB_BENCH, TAB_BATCH, TAB_FAIL = st.tabs([
-    "🔍 Compare",
-    "📊 Benchmark",
-    "📦 Batch Eval",
-    "🔬 Failure Analysis",
+    "Compare",
+    "Benchmark",
+    "Batch Eval",
+    "Failure Analysis",
 ])
 
 # ─────────────────────────────────────── Tab 1: Compare ─────────────────
@@ -413,7 +412,7 @@ with TAB_COMPARE:
 
     # Source picker
     source = st.radio(
-        "Image source", ["📁 Upload", "🎲 Random from gallery", "🔎 Browse gallery"],
+        "Image source", ["Upload", "Random from gallery", "Browse gallery"],
         horizontal=True, index=1 if not gallery_df.empty else 0,
         label_visibility="collapsed",
     )
@@ -424,7 +423,7 @@ with TAB_COMPARE:
     chosen_id: Optional[str] = None
 
     # ── Source: upload ────────────────────────────────────────────────
-    if source == "📁 Upload":
+    if source == "Upload":
         uploaded = st.file_uploader("Table image", type=["png", "jpg", "jpeg", "pdf"])
         gt_html = st.text_area("Ground-truth HTML (optional, paste here for metrics)",
                                 height=120, placeholder="<table>...</table>")
@@ -440,20 +439,17 @@ with TAB_COMPARE:
             image_label = uploaded.name
 
     # ── Source: random gallery ───────────────────────────────────────
-    elif source == "🎲 Random from gallery":
+    elif source == "Random from gallery":
         if gallery_df.empty:
             st.warning("No local gallery found. Check `paths.splits_csv` / `paths.image_root` in config.")
         else:
-            cA, cB, cC = st.columns([2, 1, 1])
+            cA, cB = st.columns([1, 1])
             with cA:
-                types = ["any"] + sorted(gallery_df["image_type"].unique().tolist())
-                pick_type = st.selectbox("Difficulty filter", types, key="rand_type")
+                if st.button("Pick random", type="primary"):
+                    st.session_state["random_pick"] = gallery_df.sample(
+                        1, random_state=random.randint(0, 1_000_000)
+                    ).iloc[0].to_dict()
             with cB:
-                if st.button("🎲 Pick random", type="primary"):
-                    sub = gallery_df if pick_type == "any" else gallery_df[gallery_df["image_type"] == pick_type]
-                    if not sub.empty:
-                        st.session_state["random_pick"] = sub.sample(1, random_state=random.randint(0, 1_000_000)).iloc[0].to_dict()
-            with cC:
                 st.metric("Gallery size", len(gallery_df))
             pick = st.session_state.get("random_pick")
             if pick:
@@ -463,13 +459,11 @@ with TAB_COMPARE:
                 gt_html = pick.get("html", "") or ""
 
     # ── Source: browse gallery ───────────────────────────────────────
-    elif source == "🔎 Browse gallery":
+    elif source == "Browse gallery":
         if gallery_df.empty:
             st.warning("No local gallery found.")
         else:
-            types = ["any"] + sorted(gallery_df["image_type"].unique().tolist())
-            pick_type = st.selectbox("Difficulty filter", types, key="browse_type")
-            sub = gallery_df if pick_type == "any" else gallery_df[gallery_df["image_type"] == pick_type]
+            sub = gallery_df
             search = st.text_input("Search by img_id (substring)", key="browse_search").strip().lower()
             if search:
                 sub = sub[sub["img_id"].str.lower().str.contains(search)]
@@ -498,7 +492,7 @@ with TAB_COMPARE:
 
         run_disabled = not selected_models
         run_label = ", ".join(_disp(m) for m in selected_models) if selected_models else "—"
-        if st.button(f"▶ Run {len(selected_models)} model(s):  {run_label}",
+        if st.button(f"Run {len(selected_models)} model(s):  {run_label}",
                       type="primary", disabled=run_disabled):
             with st.spinner("Running inference …"):
                 t0 = time.perf_counter()
@@ -532,8 +526,8 @@ with TAB_COMPARE:
                         df = parsed.get("df")
                         if df is not None and not df.empty:
                             status_msg = {
-                                "success_clean":              "✓ parsed cleanly",
-                                "success_fixed_misalignment": f"✓ parsed (padded "
+                                "success_clean":              "parsed cleanly",
+                                "success_fixed_misalignment": f"parsed (padded "
                                     f"{parsed['max_cols_before']-parsed['min_cols_before']} cols)",
                             }.get(parsed["status"], parsed["status"])
                             st.caption(
@@ -549,7 +543,7 @@ with TAB_COMPARE:
                                 f"__{name}.csv"
                             )
                             st.download_button(
-                                label=f"⬇ Download {_disp(name)} as CSV",
+                                label=f"Download {_disp(name)} as CSV",
                                 data=csv_bytes,
                                 file_name=fname,
                                 mime="text/csv",
@@ -558,7 +552,7 @@ with TAB_COMPARE:
                             )
                         else:
                             st.caption(
-                                f"⚠ parse failed: "
+                                f"parse failed: "
                                 f"{parsed.get('error_message') or parsed['status']}"
                             )
                     with st.expander("Raw HTML"):
@@ -744,7 +738,7 @@ with TAB_BATCH:
     image_root = st.text_input("Image root", value=default_root)
     limit = st.number_input("Sample limit (0 = all rows)", min_value=0, value=20)
 
-    if (bcsv is not None or csv_path) and st.button("▶ Run batch", type="primary",
+    if (bcsv is not None or csv_path) and st.button("Run batch", type="primary",
                                                        key="run_batch"):
         df = pd.read_csv(bcsv) if bcsv is not None else pd.read_csv(csv_path)
         if limit > 0:
@@ -801,7 +795,7 @@ with TAB_BATCH:
         st.dataframe(summary_table(df_res), use_container_width=True)
         st.plotly_chart(teds_distribution(df_res), use_container_width=True)
         st.download_button(
-            "⬇ Download results CSV",
+            "Download results CSV",
             data=df_res.drop(columns=["pred_html", "gt_html"], errors="ignore")
                        .to_csv(index=False).encode(),
             file_name="tablesight_batch_results.csv", mime="text/csv",
@@ -818,7 +812,7 @@ with TAB_FAIL:
         threshold = st.slider("TEDS failure threshold", 0.0, 1.0, 0.5, 0.05)
         fails = df_res[df_res["teds"] < threshold].copy()
         if fails.empty:
-            st.success("No failures below threshold 🎉")
+            st.success("No failures below threshold.")
         else:
             fails["category"] = fails.apply(
                 lambda r: classify_failure(r["pred_html"], r["gt_html"], r["teds"]),
