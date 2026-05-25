@@ -1,3 +1,6 @@
-image_type,SPARTAN_Pipeline_TEDS,n_samples
-normal_table,0.542,122
-wide_table,0.5315,47
+image_type,SPARTAN_Pipeline_TEDS,SPARTAN_Skeleton_TEDS,n_samples
+low_contrast,0.7326,0.8647,16
+low_quality_blur,0.5558,0.7005,7
+normal_table,0.5523,0.739,71
+tall_table,0.5326,0.6911,17
+wide_table,0.4399,0.6372,57
