@@ -47,13 +47,13 @@ if str(_REPO) not in sys.path:
     sys.path.insert(0, str(_REPO))
 
 from TableSight.dashboard.utils.model_loader import load_config, load_models     # noqa: E402
-from TableSight.dashboard.utils.teds import (                                      # noqa: E402
+from TableSight.dashboard.utils.metrics import (                                      # noqa: E402
     compute_teds, compute_teds_s, classify_failure,
 )
-from TableSight.dashboard.utils.visualization import (                             # noqa: E402
+from TableSight.dashboard.utils.charts import (                             # noqa: E402
     metric_bars, teds_distribution, failure_pies, summary_table,
 )
-from TableSight.dashboard.utils.html_to_dataframe import (                          # noqa: E402
+from TableSight.dashboard.utils.table_parser import (                          # noqa: E402
     robust_html_to_dataframe,
 )
 

@@ -1,0 +1,7 @@
+category,count,pct,mean_TEDS,mean_TEDS_S,description
+span_loss,39,63.9,0.5241,0.6751,ground truth has colspan/rowspan; prediction has none
+column_drift,15,24.6,0.4403,0.6729,column count off by more than 25%
+row_merge,4,6.6,0.6091,0.7518,row count collapsed to under 70% of ground truth
+cell_count_off,1,1.6,0.6528,0.8889,total cell count off by more than 30%
+row_oversplit,1,1.6,0.3846,0.6538,row count expanded past 140% of ground truth
+success,1,1.6,0.58,0.79,TEDS at or above 0.4 with no major structural error

@@ -66,9 +66,9 @@ def load_model_from_state(
     # NOTE: You need to have the unitable package in your Python path
     # Add it with: sys.path.insert(0, '/path/to/unitable')
     import sys
-    unitable_path = Path(__file__).parent.parent / "unitable"
+    unitable_path = Path(__file__).parent / "source"
     if not unitable_path.exists():
-        unitable_path = Path(__file__).parent / "unitable"
+        unitable_path = Path(__file__).parent / "source"
     if unitable_path.exists():
         sys.path.insert(0, str(unitable_path))
     

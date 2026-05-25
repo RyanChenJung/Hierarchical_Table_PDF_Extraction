@@ -2,7 +2,7 @@
 
 This is a faithful port of `notebooks/full_pipeline.ipynb` from the cloned
 poloclub/unitable repo at:
-    TableSight/models/unitable_bundle/unitable/
+    TableSight/models/unitable/unitable/
 
 Three model passes:
     1. Structure   prefix=[html],  size=448x448,  whitelist=VALID_HTML_TOKEN
@@ -34,8 +34,8 @@ from PIL import Image
 # ──────────────────────── path setup ────────────────────────────────────────
 
 HERE = Path(__file__).resolve()
-HANDOFF_DIR = HERE.parent / "unitable_bundle"
-UNITABLE_REPO = HANDOFF_DIR / "unitable"          # poloclub clone
+HANDOFF_DIR = HERE.parent                                  # this folder is the bundle
+UNITABLE_REPO = HANDOFF_DIR / "source"          # poloclub clone
 
 # Make `src.*` importable (the poloclub repo's package root)
 if UNITABLE_REPO.exists() and str(UNITABLE_REPO) not in sys.path:

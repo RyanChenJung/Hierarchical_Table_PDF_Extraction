@@ -232,7 +232,7 @@ class FlorenceRunner:
             })
 
         # Re-use SPARTAN's helpers (already imported as soon as we need them)
-        from .spartan.pipeline import (
+        from ..spartan.pipeline import (
             _cluster_rows, _estimate_n_cols, _column_centers,
             _assign_to_grid, _detect_header_rows, _detect_spans,
             _grid_to_html,

@@ -58,14 +58,14 @@ class TableExtractor:
 
     def _build_runner(self, **kwargs: Any):
         if self.model_name == "florence":
-            from .florence_runner import FlorenceRunner
+            from .florence.pipeline import FlorenceRunner
             return FlorenceRunner(
                 checkpoint_path=self.checkpoint_path,
                 device=self.device,
                 **kwargs,
             )
         if self.model_name == "unitable":
-            from .unitable_runner import UniTableRunner
+            from .unitable.pipeline import UniTableRunner
             return UniTableRunner(
                 checkpoint_path=self.checkpoint_path,
                 device=self.device,
