@@ -84,6 +84,6 @@ Also includes an **HTML → DataFrame export** utility (colspan expansion, rowsp
 - Kacey Zhu
 - Jared Maksoud
 
-📊 [Slides](your-ppt-link) · 📄 [Report](your-report-link)
+📊 [Slides](https://github.com/RyanChenJung/Hierarchical_Table_PDF_Extraction/blob/main/Hierarchical_Table_PDF_Extraction%20Presentation.pdf) · 📄 [Report](https://github.com/RyanChenJung/Hierarchical_Table_PDF_Extraction/blob/main/Final%20Report.pdf)
 
 *Advanced Computer Vision for Deep Learning — Final Project*
